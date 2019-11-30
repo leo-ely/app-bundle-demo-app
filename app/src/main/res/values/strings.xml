@@ -1,0 +1,57 @@
+<resources>
+    <string name="app_name">App Bundle Demo</string>
+
+    <string name="package_module_1">module1</string>
+    <string name="package_module_2">module2</string>
+
+    <string name="module_status">Status</string>
+    <string name="module_status_not_installed">NÃO INSTALADO</string>
+    <string name="module_status_installed">INSTALADO</string>
+
+    <string name="button_verifying_module">Verificando…</string>
+    <string name="button_install_module">Instalar</string>
+    <string name="button_open_module">Abrir</string>
+
+    <string name="dialog_install_module">O download do módulo falhou! Tentar novamente?</string>
+    <string name="dialog_button_yes">Sim</string>
+    <string name="dialog_button_no">Não</string>
+
+    <string name="toast_module_installing">Instalando módulo...</string>
+    <string name="toast_module_installed">Módulo instalado com sucesso</string>
+    <string name="toast_network_error">Erro na conexão de Internet</string>
+    <string name="toast_module_unavailable">Módulo indisponível para o dispositivo</string>
+    <string name="toast_insufficient_storage">Não há espaço suficiente no dispositivo</string>
+    <string name="toast_active_sessions_exceeded">Outro módulo está sendo baixado</string>
+    <string name="toast_intent_start_failed">Falha ao abrir módulo</string>
+    <string name="title_module1">Módulo Pessoas</string>
+    <string name="title_module2">Módulo Notas</string>
+    <string name="title_activity_pessoas">Pessoas</string>
+    <string name="title_activity_notas">Notas</string>
+    <string name="title_activity_scanner">QR Scanner</string>
+
+    <string name="hint_nome">Nome *</string>
+    <string name="hint_cpf">CPF (números) *</string>
+    <string name="hint_telefone">Telefone</string>
+    <string name="hint_email">Email</string>
+
+    <string name="hint_numero">Número *</string>
+    <string name="hint_serie">Série *</string>
+    <string name="hint_chave">Chave NF-e *</string>
+    <string name="hint_data_emissao">Data de emissão *</string>
+    <string name="hint_valor_nota">Valor da nota *</string>
+
+    <string name="snack_saved">Registro salvo</string>
+    <string name="snack_save_error">Erro ao salvar registro</string>
+    <string name="snack_deleted">Registro excluído</string>
+    <string name="snack_delete_error">Erro ao excluir registro</string>
+    <string name="snack_error_fields">Preencha os dados corretamente!</string>
+    <string name="snack_error_rest">Erro ao carregar os dados</string>
+    <string name="snack_error_import_nota">Erro ao importar nota!</string>
+    <string name="snack_scanner_error">Erro no scanner!</string>
+    <string name="snack_scanner_permission_error">Sem permissão de acesso à câmera!</string>
+    <string name="toast_error_consulta_nota">Erro ao consultar dados da nota!</string>
+    <string name="save">Salvar</string>
+    <string name="cancel">Cancelar</string>
+    <string name="delete">Excluir o registro?</string>
+    <string name="required">* Obrigatório</string>
+</resources>

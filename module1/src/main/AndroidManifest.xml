@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:dist="http://schemas.android.com/apk/distribution"
+    package="com.prototype.dynamicfeature1">
+
+    <application>
+        <activity
+            android:name=".Activity"
+            android:label="@string/title_activity_pessoas"
+            android:parentActivityName="com.prototype.appbundle.MainActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.NoActionBar">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.prototype.appbundle.MainActivity" />
+        </activity>
+    </application>
+
+    <dist:module
+        dist:instant="false"
+        dist:title="@string/title_module1">
+        <dist:delivery>
+            <dist:on-demand />
+        </dist:delivery>
+
+        <dist:fusing dist:include="true" />
+    </dist:module>
+
+</manifest>
