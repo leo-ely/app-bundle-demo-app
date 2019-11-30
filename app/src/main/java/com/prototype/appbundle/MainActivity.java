@@ -32,34 +32,24 @@ import java.util.Set;
 
 public class MainActivity extends AppCompatActivity {
 
-    // Request codes for module installation
     private static final int REQUEST_CODE = 101;
     private static int sessionId = 0;
 
-    // Module manager
     private static SplitInstallManager manager;
     private static Listener listener;
     private static SplitInstallRequest request;
-    private static List<String> dynamicModules;
     private static Set<String> installedModules;
-
-    // Modules
     private static String module1;
     private static String module2;
+
     private static List<FrameLayout> frameList;
-    private static List<TextView> textList;
-    private static List<Button> buttonList;
-    private static AlertDialog alert; // Alert for confirmation dialog
-    // FrameLayouts
+    private static AlertDialog alert;
     private FrameLayout fl_module_1;
     private FrameLayout fl_module_2;
-    // TextViews
     private TextView tv_module_1_status;
     private TextView tv_module_2_status;
-    // Buttons
     private Button bt_module_1;
     private Button bt_module_2;
-    // Progress Bar
     private ProgressBar progressBar;
 
     @Override
@@ -67,18 +57,18 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        manager = SplitInstallManagerFactory.create(this); // Manager for dynamic modules
-        dynamicModules = new ArrayList<>();
-        dynamicModules = getAllModules(dynamicModules); // Get all modules in app
+        manager = SplitInstallManagerFactory.create(this);
 
-        initLayout(); // Set app layout
-        createButtonListeners(); // Initialize button listeners
+        initLayout();
+        createButtonListeners();
     }
 
     @Override
     protected void onResume() {
         setFrameBackgrounds(frameList);
         manager.registerListener(listener);
+        updateTextViews();
+        updateButtons();
         super.onResume();
     }
 
@@ -89,21 +79,21 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void initLayout() {
-        // Enable dark mode in app
+        installedModules = manager.getInstalledModules();
+        module1 = getString(R.string.package_module_1);
+        module2 = getString(R.string.package_module_2);
+
         AppCompatDelegate.setDefaultNightMode
                 (AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM);
 
-        // Instantiate frame layouts
         frameList = initFrameLayouts();
         setFrameBackgrounds(frameList);
 
-        // Instantiate status labels
-        textList = initTextViews();
-        updateTextViews(textList);
+        initTextViews();
+        updateTextViews();
 
-        // Instantiate buttons
-        buttonList = initButtons();
-        updateButtons(buttonList);
+        initButtons();
+        updateButtons();
 
         progressBar = findViewById(R.id.progressBar);
         listener = new Listener();
@@ -135,82 +125,48 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    private List<TextView> initTextViews() {
+    private void initTextViews() {
         tv_module_1_status = findViewById(R.id.tv_module_1_status);
         tv_module_2_status = findViewById(R.id.tv_module_2_status);
-
-        List<TextView> list = new ArrayList<>();
-        list.add(tv_module_1_status);
-        list.add(tv_module_2_status);
-
-        return list;
     }
 
-    private void updateTextViews(List<TextView> list) {
-        list.forEach(t -> {
-            if (verifyModuleInstallations(dynamicModules))
-                t.setText(R.string.module_status_installed);
-            else
-                t.setText(R.string.module_status_not_installed);
-        });
+    private void updateTextViews() {
+        tv_module_1_status.setText(isModuleInstalled(module1) ?
+                R.string.module_status_installed :
+                R.string.module_status_not_installed);
+        tv_module_2_status.setText(isModuleInstalled(module2) ?
+                R.string.module_status_installed :
+                R.string.module_status_not_installed);
     }
 
-    private List<Button> initButtons() {
+    private void initButtons() {
         bt_module_1 = findViewById(R.id.bt_module_1);
         bt_module_2 = findViewById(R.id.bt_module_2);
-
-        List<Button> list = new ArrayList<>();
-        list.add(bt_module_1);
-        list.add(bt_module_2);
-
-        return list;
     }
 
-    private void updateButtons(List<Button> list) {
-        list.forEach(b -> {
-            if (verifyModuleInstallations(dynamicModules))
-                b.setText(R.string.button_open_module);
-            else
-                b.setText(R.string.button_install_module);
-        });
+    private void updateButtons() {
+        bt_module_1.setText(isModuleInstalled(module1) ?
+                R.string.button_open_module :
+                R.string.button_install_module);
+        bt_module_2.setText(isModuleInstalled(module2) ?
+                R.string.button_open_module :
+                R.string.button_install_module);
     }
 
-    private boolean verifyModuleInstallations(List<String> list) {
-        installedModules = manager.getInstalledModules();
-
-        for (String installedModule : installedModules) {
-            for (String module : list) {
-                return module.contains(installedModule);
-            }
-        }
-
-        return false;
-    }
-
-    private List<String> getAllModules(List<String> modules) {
-        modules.add(getString(R.string.package_module_1));
-        modules.add(getString(R.string.package_module_2));
-
-        return modules;
-    }
-
-    private boolean getModuleInstallation(String moduleName) {
-        return manager.getInstalledModules().contains(moduleName);
+    private boolean isModuleInstalled(String moduleName) {
+        return installedModules.contains(moduleName);
     }
 
     private void createButtonListeners() {
-        module1 = getString(R.string.package_module_1);
-        module2 = getString(R.string.package_module_2);
-
         bt_module_1.setOnClickListener(view -> {
-            if (getModuleInstallation(module1))
+            if (isModuleInstalled(module1))
                 createIntent(module1);
             else
                 installModule(module1);
         });
 
         bt_module_2.setOnClickListener(view -> {
-            if (getModuleInstallation(module2))
+            if (isModuleInstalled(module2))
                 createIntent(module2);
             else
                 installModule(module2);
@@ -236,7 +192,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void installModule(String moduleName) {
-        // Build module request for installation
         request = SplitInstallRequest.newBuilder().addModule(moduleName).build();
 
         manager.startInstall(request)
@@ -246,34 +201,26 @@ public class MainActivity extends AppCompatActivity {
                 .addOnFailureListener(exception -> {
                     switch (((SplitInstallException) exception).getErrorCode()) {
                         case SplitInstallErrorCode.NETWORK_ERROR:
-                            // Network error (connection)
                             Toast.makeText(getApplicationContext(),
                                     getString(R.string.toast_network_error),
                                     Toast.LENGTH_LONG).show();
                             break;
-
                         case SplitInstallErrorCode.MODULE_UNAVAILABLE:
-                            // Module unavailable
                             Toast.makeText(getApplicationContext(),
                                     getString(R.string.toast_module_unavailable),
                                     Toast.LENGTH_LONG).show();
                             break;
-
                         case SplitInstallErrorCode.INSUFFICIENT_STORAGE:
-                            // Insufficient storage space
                             Toast.makeText(getApplicationContext(),
                                     getString(R.string.toast_insufficient_storage),
                                     Toast.LENGTH_LONG).show();
                             break;
-
                         case SplitInstallErrorCode.ACTIVE_SESSIONS_LIMIT_EXCEEDED:
-                            // Active sessions exceeded (another download is in progress)
                             Toast.makeText(getApplicationContext(),
                                     getString(R.string.toast_active_sessions_exceeded),
                                     Toast.LENGTH_LONG).show();
                             break;
                     }
-
                     manager.cancelInstall(sessionId);
                 });
     }
@@ -293,7 +240,6 @@ public class MainActivity extends AppCompatActivity {
 
     private void displayDownloadStatus(SplitInstallSessionState state) {
         showProgressVisibility(true);
-
         progressBar.setMax((int) state.totalBytesToDownload());
         progressBar.setProgress((int) state.bytesDownloaded());
     }
@@ -317,7 +263,6 @@ public class MainActivity extends AppCompatActivity {
                 (dialogInterface, i) -> {
                     dialogInterface.dismiss();
                 });
-
         alert = dialog.create();
         alert.show();
     }
@@ -334,7 +279,6 @@ public class MainActivity extends AppCompatActivity {
 
                 switch (state.status()) {
                     case SplitInstallSessionStatus.REQUIRES_USER_CONFIRMATION:
-                        // Ask for user confirmation (module exceeding 10MB in size)
                         try {
                             startIntentSender(state.resolutionIntent().getIntentSender(),
                                     null, 0, 0, 0);
@@ -345,19 +289,13 @@ public class MainActivity extends AppCompatActivity {
                             Log.e(moduleName, e.toString());
                         }
                         break;
-
                     case SplitInstallSessionStatus.DOWNLOADING:
-                        // Display download status
                         displayDownloadStatus(state);
                         break;
-
                     case SplitInstallSessionStatus.INSTALLING:
-                        // Display installation status
                         displayDownloadStatus(state);
                         break;
-
                     case SplitInstallSessionStatus.INSTALLED:
-                        // Module successfully installed
                         showProgressVisibility(false);
                         Toast.makeText(getApplicationContext(),
                                 getString(R.string.toast_module_installed),
